@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <array>
 #include <cstdint>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 
@@ -9,7 +10,7 @@ int main()
 {
 
     std::ifstream ROM;
-    ROM.open("nomearquivo.txt", std::ios_base::binary);
+    ROM.open("../roms/teste1.ch8", std::ios_base::binary);
     if (ROM.is_open() == false) {
         std::cout << "abertura falhou\n";
         return -1;
@@ -26,5 +27,17 @@ int main()
         i++;
     }
 
+    for (int x = 0; i < 80; i++) {
+        Chip8.memoria.at(x) = Chip8.sprites.at(x);
+    }
+    /*
+-----------------------TESTES DA MEMORIA--------------------------
+
+    for (int z = 511; z < 540; z++) {
+        std::cout << Chip8.memoria.at(z) << std::endl;
+    }
+
+
+    */
     return 0;
 }
