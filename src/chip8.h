@@ -16,22 +16,7 @@ struct Chip_8 {
     uint8_t sound_timer;
     uint8_t SP = 0;
     /*-------registradores-----*/
-    uint8_t V0;
-    uint8_t V1;
-    uint8_t V2;
-    uint8_t V3;
-    uint8_t V4;
-    uint8_t V5;
-    uint8_t V6;
-    uint8_t V7;
-    uint8_t V8;
-    uint8_t V9;
-    uint8_t VA;
-    uint8_t VB;
-    uint8_t VC;
-    uint8_t VD;
-    uint8_t VF;
-    uint8_t VG;
+    std::array<uint8_t, 16> registradores;
     /********************display********************/
     std::array<uint8_t, 2048> display;
 
