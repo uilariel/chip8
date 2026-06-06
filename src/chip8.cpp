@@ -3,6 +3,7 @@
 #include <chrono>
 #include <cstdint>
 #include <fstream>
+#include <random>
 #include <stdexcept>
 
 void desestruturar(dados& dado, uint16_t instrucao)
@@ -172,11 +173,69 @@ void op_8(dados& dado, Chip_8& chip)
         chip.registradores[dado.x] = chip.registradores[dado.x] * 2;
     }
 }
+// pula a instrucao se reg_x != reg_y
+void op_9(dados& dado, Chip_8& chip)
+{
+    if (chip.registradores[dado.x] != chip.registradores[dado.y]) {
+        chip.PC = chip.PC + 2;
+    }
+}
 
-void op_9(dados& dado, Chip_8& chip);
-void op_A(dados& dado, Chip_8& chip);
-void op_B(dados& dado, Chip_8& chip);
-void op_C(dados& dado, Chip_8& chip);
-void op_D(dados& dado, Chip_8& chip);
+// VALOR DO REGISTRADOR I = NNN
+void op_A(dados& dado, Chip_8& chip)
+{
+    chip.reg_I = dado.nnn;
+}
+
+// jump to nnn + v0
+void op_B(dados& dado, Chip_8& chip)
+{
+    chip.PC = dado.nnn + chip.registradores[0x0];
+}
+
+// byte aleatorio AND kk.
+void op_C(dados& dado, Chip_8& chip)
+{
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_int_distribution<int> dist(0, 255);
+    chip.registradores[dado.x] = chip.registradores[dado.x] & dist(mt);
+}
+
+// exibe n-byte sprite comecando na localizacao I da memoria
+void op_D(dados& dado, Chip_8& chip)
+{
+    int x = chip.registradores[dado.x] % 64;
+    int y = chip.registradores[dado.y] % 32;
+    chip.registradores[0xF] = 0;
+
+    for (int i = 0; i < dado.n; i++) {
+        uint8_t byte = chip.memoria[chip.reg_I + i];
+        uint8_t desloc = 7;
+
+        if (y == 32) {
+            break;
+        }
+        for (int a = 0; a < 8; a++) {
+            if (x == 64) {
+                break;
+
+                uint8_t byte_tela = chip.display[y * 64 + x]; /// lugar onde o pixel comeca a ser escrito.
+                if (byte >> desloc != 0 & byte_tela != 0) { // se os dois estiverem acesos.
+                    chip.registradores[0xF] = 1;
+                    chip.display[y * 64 + x] = chip.display[y * 64 + x] ^ 1;
+                }
+                if (byte >> desloc != 0 && byte_tela == 0) {
+                    chip.display[y * 64 + x] = chip.display[y * 64 + x] ^ 1;
+                }
+                desloc--;
+                x++;
+            }
+        }
+        x = chip.registradores[dado.x] % 64;
+        y++;
+    }
+}
+
 void op_E(dados& dado, Chip_8& chip);
 void op_F(dados& dado, Chip_8& chip);
