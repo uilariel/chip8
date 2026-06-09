@@ -237,5 +237,54 @@ void op_D(dados& dado, Chip_8& chip)
     }
 }
 
-void op_E(dados& dado, Chip_8& chip);
-void op_F(dados& dado, Chip_8& chip);
+void op_E(dados& dado, Chip_8& chip)
+{
+    if (dado.kk == 0x9E) {
+        if (chip.teclado[chip.registradores[dado.x]] == 1) {
+            chip.PC = chip.PC + 2;
+        }
+    }
+    if (dado.kk == 0xA1) {
+        if (chip.teclado[chip.registradores[dado.x]] == 0) {
+            chip.PC = chip.PC + 2;
+        }
+    }
+}
+void op_F(dados& dado, Chip_8& chip)
+{
+    if (dado.kk == 0x07) {
+        chip.registradores[dado.x] = chip.timer;
+    }
+
+    if (dado.kk == 0x0A) {
+        chip.input = true;
+        chip.registrador_destino = dado.x;
+    }
+
+    if (dado.kk == 0x15) {
+        chip.timer = chip.registradores[dado.x];
+    }
+
+    if (dado.kk == 0x18) {
+        chip.sound_timer = chip.registradores[dado.x];
+    }
+
+    if (dado.kk == 0x1E) {
+        chip.reg_I = chip.reg_I + chip.registradores[dado.x];
+    }
+
+    if (dado.kk == 0x29) {
+        chip.reg_I = chip.registradores[dado.x] * 5;
+    }
+
+    if (dado.kk == 0x33) {
+
+        chip.memoria[chip.reg_I] = chip.registradores[dado.x] / 100;
+        chip.memoria[chip.reg_I + 1] = (chip.registradores[dado.x] / 10) % 10;
+        chip.memoria[chip.reg_I + 2] = (chip.registradores[dado.x] % 10);
+    }
+
+    if (dado.kk == 0x55) { }
+
+    if (dado.kk == 0x65) { }
+}

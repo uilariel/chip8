@@ -10,16 +10,18 @@ struct Chip_8 {
 
     std::array<uint8_t, 4096> memoria;
     uint16_t PC = 0x200;
-    uint16_t R_index_I;
+    uint16_t reg_I; // registrador I;
     std::array<uint16_t, 16> stack;
     uint8_t timer;
     uint8_t sound_timer;
     uint8_t SP = 0;
+    std::array<uint8_t, 16> teclado;
     /*-------registradores-----*/
     std::array<uint8_t, 16> registradores;
     /********************display********************/
     std::array<uint8_t, 2048> display;
-
+    bool input = false;
+    uint8_t registrador_destino;
     // como os digitos do teclado sao representados em hexadecimal
     std::array<uint8_t, 80> sprites = {
         0xf0,
@@ -120,6 +122,7 @@ struct dados {
     // ultimos 4 bits
     uint8_t n;
 };
+
 // funcao que separa as instrucoes
 void desestruturar(dados&, uint16_t);
 void decode(const dados, Chip_8&);
